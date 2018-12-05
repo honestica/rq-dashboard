@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker RQ Dashboard image
+          command: |
+            if [[ $VERSION ]]
+            then DOCKER_TAG=$VERSION
+            else DOCKER_TAG=$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+            fi
+            echo $DOCKER_TAG
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker build -t honestica/rq-dashboard:$DOCKER_TAG .
+            docker tag honestica/rq-dashboard:$DOCKER_TAG honestica/rq-dashboard:$CIRCLE_BRANCH-latest
+            docker push honestica/rq-dashboard:$DOCKER_TAG
+            docker push honestica/rq-dashboard:$CIRCLE_BRANCH-latest
