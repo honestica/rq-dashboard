@@ -20,3 +20,10 @@ jobs:
             docker tag honestica/rq-dashboard:$DOCKER_TAG honestica/rq-dashboard:$CIRCLE_BRANCH-latest
             docker push honestica/rq-dashboard:$DOCKER_TAG
             docker push honestica/rq-dashboard:$CIRCLE_BRANCH-latest
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          context: org-global
